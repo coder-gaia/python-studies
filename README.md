@@ -1,6 +1,8 @@
 # FastAPI Task Manager
 
-Projeto desenvolvido para estudo de FastAPI, SQLAlchemy e modelagem relacional. A aplicação implementa uma API REST para gerenciamento de usuários e tarefas, explorando conceitos fundamentais de backend como CRUD, relacionamentos entre entidades, filtros e paginação.
+Projeto desenvolvido para estudo de FastAPI, SQLAlchemy, modelagem relacional e testes automatizados.
+
+A aplicação implementa uma API REST para gerenciamento de usuários e tarefas, explorando conceitos fundamentais de backend como CRUD, relacionamentos entre entidades, injeção de dependência, persistência de dados e testes de API.
 
 ## Tecnologias
 
@@ -8,6 +10,10 @@ Projeto desenvolvido para estudo de FastAPI, SQLAlchemy e modelagem relacional. 
 - SQLAlchemy
 - SQLite
 - Pydantic
+- Pytest
+- HTTPX / TestClient
+
+---
 
 ## Funcionalidades
 
@@ -19,7 +25,6 @@ Projeto desenvolvido para estudo de FastAPI, SQLAlchemy e modelagem relacional. 
 - Atualizar usuário
 - Remover usuário
 - Buscar usuários por nome
-- Paginação de resultados
 
 ### Tarefas
 
@@ -29,7 +34,22 @@ Projeto desenvolvido para estudo de FastAPI, SQLAlchemy e modelagem relacional. 
 - Remover tarefa
 - Marcar tarefa como concluída
 
-## Conceitos estudados
+### Testes Automatizados
+
+- Teste de criação de usuário
+- Teste de busca de usuário
+- Teste de usuário inexistente
+- Teste de atualização de usuário
+- Teste de remoção de usuário
+- Teste de criação de tarefa
+- Teste de listagem de tarefas
+- Teste de atualização de tarefa
+- Teste de conclusão de tarefa
+- Teste de remoção de tarefa
+
+---
+
+## Conceitos Estudados
 
 ### Modelagem Relacional
 
@@ -48,7 +68,11 @@ Task
  └─ user_id
 ```
 
-Um usuário pode possuir múltiplas tarefas, enquanto cada tarefa pertence a apenas um usuário.
+Um usuário pode possuir múltiplas tarefas.
+
+Cada tarefa pertence a apenas um usuário.
+
+---
 
 ### SQLAlchemy Relationships
 
@@ -59,31 +83,67 @@ Utilização de:
 - back_populates
 - cascade delete
 
-Permite navegar entre entidades de forma intuitiva:
+Permite navegar entre entidades sem escrever consultas SQL manualmente.
 
 ```python
 user.tasks
 ```
 
+Retorna todas as tarefas do usuário.
+
 ```python
 task.user
 ```
 
+Retorna o usuário dono da tarefa.
+
+---
+
+### Dependency Injection com FastAPI
+
+Uso do sistema de dependências do FastAPI para gerenciamento automático das sessões do banco.
+
+```python
+db: Session = Depends(get_db)
+```
+
+Benefícios:
+
+- Código mais limpo
+- Menos repetição
+- Fechamento automático das sessões
+- Facilita testes automatizados
+
+---
+
 ### Query Parameters
 
-Busca de usuários por nome:
+Filtro por nome:
 
 ```http
 GET /users?name=alex
 ```
 
-### Paginação
+---
 
-Listagem paginada de usuários:
+### Schemas com Pydantic
 
-```http
-GET /users?page=1&limit=10
+Validação automática dos dados recebidos pela API.
+
+```python
+class UserCreate(BaseModel):
+    name: str
+    email: str
 ```
+
+Benefícios:
+
+- Validação automática
+- Documentação automática
+- Tipagem forte
+- Menos código manual
+
+---
 
 ## Endpoints
 
@@ -107,6 +167,8 @@ GET /users?page=1&limit=10
 | PATCH  | `/tasks/{task_id}/complete` | Marcar tarefa como concluída |
 | DELETE | `/tasks/{task_id}`          | Remover tarefa               |
 
+---
+
 ## Estrutura do Projeto
 
 ```text
@@ -116,40 +178,63 @@ GET /users?page=1&limit=10
 ├── schemas.py
 ├── database.py
 ├── requirements.txt
-└── database.db
+├── database.db
+│
+└── tests
+    ├── test_users.py
+    └── test_tasks.py
 ```
+
+---
 
 ## Executando o Projeto
 
-Instale as dependências:
-
 ```bash
 pip install -r requirements.txt
-```
-
-Execute a aplicação:
-
-```bash
 uvicorn main:app --reload
 ```
 
+---
+
+## Executando os Testes
+
+Ative o ambiente virtual:
+
+```bash
+.\.venv\Scripts\activate
+```
+
+Execute os testes:
+
+```bash
+python -m pytest
+```
+
+Saída esperada:
+
+```text
+10 passed
+```
+
+---
+
 ## Documentação
 
-Acesse a documentação interativa gerada automaticamente pelo FastAPI:
+Swagger UI:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-Também disponível em:
+ReDoc:
 
 ```text
 http://127.0.0.1:8000/redoc
 ```
 
-## Aprendizados
+---
 
-Este projeto foi desenvolvido com foco em praticar:
+## Aprendizados
 
 - Desenvolvimento de APIs REST
 - FastAPI
@@ -157,11 +242,15 @@ Este projeto foi desenvolvido com foco em praticar:
 - Pydantic
 - Relacionamentos entre entidades
 - CRUD completo
+- Dependency Injection
 - Query Parameters
-- Paginação
 - Tratamento de erros com HTTPException
 - Persistência de dados com SQLite
+- Testes automatizados com Pytest
+- Testes de endpoints HTTP com TestClient
+
+---
 
 ## Autor
 
-Desenvolvido por Alexandre Gaia para estudos de backend com Python e FastAPI.
+Desenvolvido por **Alexandre Gaia** para estudos de backend com Python, FastAPI e testes automatizados.
