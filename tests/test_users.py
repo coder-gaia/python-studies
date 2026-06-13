@@ -76,31 +76,6 @@ def test_update_user():
 
     assert data["name"] == "Pedro Atualizado"
     assert data["email"] == "novo@email.com"
-
-    create = client.post(
-        "/users",
-        json={
-            "name": "Pedro",
-            "email": "pedro@email.com"
-        }
-    )
-
-    user = create.json()
-
-    response = client.put(
-        f"/users/{user['id']}",
-        json={
-            "name": "Pedro Atualizado",
-            "email": "novo@email.com"
-        }
-    )
-
-    assert response.status_code == 200
-
-    data = response.json()
-
-    assert data["name"] == "Pedro Atualizado"
-    assert data["email"] == "novo@email.com"
     
 def test_delete_user():
 
